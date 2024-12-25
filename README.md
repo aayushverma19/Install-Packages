@@ -27,12 +27,12 @@ hdbkd ishuh
 
 Learn about various deployment strategies and implement them while integrating Amazon S3 for asset management and deployment artifacts. 
 
-Deployment Strategies to Explore: 
-Recreate Deployment 
-Rolling Deployment 
-Blue-Green Deployment 
-A/B Deployment 
-Canary Deployment 
+*   Deployment Strategies to Explore: 
+*   Recreate Deployment 
+*   Rolling Deployment 
+*   Blue-Green Deployment 
+*   A/B Deployment 
+*   Canary Deployment 
 
 Task Breakdown: 
 
@@ -75,4 +75,38 @@ Create a GitHub repository to store your research, implementation code, and docu
 Ensure your repository is well-organized with clear README files explaining each deployment strategy and how you implemented them. 
 
 - [Implementation](#Implementation)
+
+## PART-1 SERVER, IMAGE AND SNAPSHOT
+
+![alt text](<AMI image.png>)
+
+#### Server Base
+
+* nginx-v1
+* AMI nginx-v1
+* AMI Snapshot
+
+#### Server Base
+
+* nginx-v2
+* AMI nginx-v2
+* AMI Snapshot
+
+## PART -2 Application Load Balancer
+
+![alt text](<ALB image.png>)
+
+#### Auto-Scaling Group
+* nginx v1 Removal - Deleted via Auto Scaling group
+* nginx v2 Addition Template - Adding Via Auto Scaling
+
+## PART -3 Application Load Balancer
+
+#### Deployment Strategy
+
+1. Recreate Strategy :- a basic deployment pattern which simply shuts down
+    all the old pods and replaces them with new ones
+* We don’t use it much as the downtime is high in this.
+
+Removed all Instance associated with v1 at one time
   
