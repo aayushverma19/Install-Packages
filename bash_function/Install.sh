@@ -118,6 +118,7 @@ purge_docker() {
     echo "Purging Docker..."
     sudo apt remove --purge -y docker docker-engine docker.io containerd runc
     sudo rm -rf /var/lib/docker /var/lib/containerd
+    sudo rm -rf /etc/apt/keyrings/docker.gpg
     sudo apt autoremove -y
     sudo apt clean
     echo "Docker has been purged."
@@ -205,7 +206,6 @@ install_package() {
 #     echo "5. Install All Packages"
 #     echo "6. Exit"
 #     read -p "Enter your choice [1-6]: " choice
-
 #     case $choice in
 #         1)
 #             install_package aws
