@@ -87,7 +87,7 @@ install_jenkins() {
     sudo systemctl start jenkins
     sudo systemctl enable jenkins
     echo "Jenkins installation complete."
-    systemctl status jenkins
+    jenkins --version
 }
 
 # Function to purge Ansible
