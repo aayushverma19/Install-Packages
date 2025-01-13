@@ -9,8 +9,9 @@ main_menu() {
     echo "2. Install or Update Terraform"
     echo "3. Install or Update Jenkins"
     echo "4. Install or Update Ansible"
-    echo "5. Install All Packages"
-    echo "6. Exit"
+    echo "5. Install or Update Docker"
+    echo "6. Install All Packages"
+    echo "7. Exit"
     read -p "Enter your choice [1-6]: " choice
 
     case $choice in
@@ -27,9 +28,12 @@ main_menu() {
             install_package ansible
             ;;
         5)
-            install_package all
+            install_package docker
             ;;
         6)
+            install_package all
+            ;;
+        7)
             echo "Exiting. Goodbye!"
             exit 0
             ;;
