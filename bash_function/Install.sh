@@ -20,10 +20,14 @@ check_package() {
 # Function to purge AWS CLI
 purge_aws_cli() {
     echo "Purging AWS CLI..."
-    sudo apt remove --purge -y awscli
-    sudo rm -rf /usr/local/aws /usr/local/bin/aws
-    sudo rm -rf awscliv2.zip aws
+    if [ -d "/usr/local/aws-cli" ]; then
+        echo "Found preexisting AWS CLI installation. Removing..."
+        sudo rm -rf /usr/local/aws-cli
+        sudo rm -rf /usr/local/bin/aws
+        sudo rm -rf awscliv2.zip aws
+    fi
     echo "AWS CLI has been purged."
+    
 }
 
 # Function to install AWS CLI
@@ -33,7 +37,7 @@ install_aws_cli() {
     sudo apt install unzip -y
     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
     unzip awscliv2.zip
-    sudo ./aws/install
+    sudo ./aws/install --update
     echo "AWS CLI installation complete."
     aws --version
 }
@@ -60,6 +64,7 @@ install_terraform() {
 # Function to purge Jenkins
 purge_jenkins() {
     echo "Purging Jenkins..."
+    sudo apt remove --purge -y openjdk-17-jre openjdk-17-jdk
     sudo apt remove --purge -y jenkins
     sudo rm -f /etc/apt/sources.list.d/jenkins.list
     sudo rm -f /usr/share/keyrings/jenkins-keyring.asc
@@ -71,6 +76,10 @@ purge_jenkins() {
 # Function to install Jenkins
 install_jenkins() {
     echo "Installing Jenkins..."
+    sudo apt update
+    sudo apt install -y fontconfig openjdk-17-jre
+    echo "Java installed:"
+    java -version
     sudo wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
     echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
     sudo apt-get update
@@ -102,6 +111,38 @@ install_ansible() {
     ansible --version
 }
 
+# Function to purge Docker
+purge_docker() {
+    echo "Purging Docker..."
+    sudo apt remove --purge -y docker docker-engine docker.io containerd runc
+    sudo rm -rf /var/lib/docker /var/lib/containerd
+    sudo apt autoremove -y
+    sudo apt clean
+    echo "Docker has been purged."
+}
+
+# Function to install Docker
+install_docker() {
+    echo "Installing Docker..."
+    sudo apt update -y
+    sudo apt install -y \
+        ca-certificates \
+        curl \
+        gnupg \
+        lsb-release
+    sudo mkdir -p /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    echo \
+        "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+        $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    sudo apt update -y
+    sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    sudo systemctl start docker
+    sudo systemctl enable docker
+    echo "Docker installation complete."
+    docker --version
+}
+
 # Function to handle installation of a specific package
 install_package() {
     case "$1" in
@@ -129,12 +170,20 @@ install_package() {
             fi
             install_ansible
             ;;
+
+        docker)
+            if check_package docker; then
+                purge_docker
+            fi
+            install_docker
+            ;;
         all)
             echo "Installing all packages..."
             install_package aws
             install_package terraform
             install_package jenkins
             install_package ansible
+            install_package docker
             ;;
         *)
             echo "Invalid package: $1"
@@ -144,7 +193,7 @@ install_package() {
 
 
 
-############### Function call as main file work in this ##############
+# ############## Function call as main file work in this ##############
 # main_menu() {
 #     echo "Choose an option:"
 #     echo "1. Install or Update AWS CLI"
