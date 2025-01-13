@@ -118,7 +118,7 @@ purge_docker() {
     echo "Purging Docker..."
     sudo apt remove --purge -y docker docker-engine docker.io containerd runc
     sudo rm -rf /var/lib/docker /var/lib/containerd
-    sudo rm -rf /etc/apt/keyrings/docker.gpg
+    #sudo rm -rf /etc/apt/keyrings/docker.gpg
     sudo apt autoremove -y
     sudo apt clean
     echo "Docker has been purged."
