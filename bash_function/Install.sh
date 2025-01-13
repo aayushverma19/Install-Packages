@@ -24,7 +24,7 @@ purge_aws_cli() {
         echo "Found preexisting AWS CLI installation. Removing..."
         sudo rm -rf /usr/local/aws-cli
         sudo rm -rf /usr/local/bin/aws
-        sudo rm -rf awscliv2.zip aws
+        sudo rm -rf /home/ubuntu/aws
     fi
     echo "AWS CLI has been purged."
     
@@ -38,6 +38,8 @@ install_aws_cli() {
     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
     unzip awscliv2.zip
     sudo ./aws/install --update
+    sudo rm -rf awscliv2.zip
+    sudo mv aws /home/ubuntu/aws
     echo "AWS CLI installation complete."
     aws --version
 }
